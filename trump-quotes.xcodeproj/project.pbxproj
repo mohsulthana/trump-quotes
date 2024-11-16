@@ -16,6 +16,11 @@
 			path = "trump-quotes";
 			sourceTree = "<group>";
 		};
+		179D97102CE85F7800381A1C /* Model */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +39,7 @@
 			children = (
 				179D96FA2CE8559300381A1C /* trump-quotes */,
 				179D96F92CE8559300381A1C /* Products */,
+				179D97102CE85F7800381A1C /* Model */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +68,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				179D96FA2CE8559300381A1C /* trump-quotes */,
+				179D97102CE85F7800381A1C /* Model */,
 			);
 			name = "trump-quotes";
 			packageProductDependencies = (
