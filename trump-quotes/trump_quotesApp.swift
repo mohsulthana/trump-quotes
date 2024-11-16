@@ -12,6 +12,7 @@ struct trump_quotesApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.light)
         }
     }
 }
