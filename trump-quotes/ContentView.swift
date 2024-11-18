@@ -11,7 +11,8 @@ struct ContentView: View {
     @State private var isLoading = false
     @State private var searchText = ""
     @StateObject private var service = SpreadsheetService()
-    private var quotes: [Quote] = quotesData
+    @State private var todaysQuote: String = ""
+    private let quoteManager = QuoteManager()
 
     var body: some View {
         if #available(iOS 17.0, *) {
@@ -23,32 +24,38 @@ struct ContentView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .padding()
 
-                    if service.quotes.isEmpty {
-                        List(quoteResults) { quote in
-                            VStack(alignment: .leading) {
-                                Text(quote.quote)
-                                    .font(.headline)
-                            }
-                            .padding(.vertical, 4)
-                            .transition(.opacity.combined(with: .slide))
-                        }
-                    } else {
-                        List(quoteResults) { quote in
-                            VStack(alignment: .leading) {
-                                Text(quote.quote)
-                                    .font(.headline)
-                            }
-                            .padding(.vertical, 4)
-                            .transition(.opacity.combined(with: .slide))
-                        }
-                        .listStyle(.insetGrouped)
+                    Spacer()
+                        .frame(height: 4)
+
+                    VStack {
+                        Text(todaysQuote)
+                            .font(.custom("Noteworthy-Light", size: 28))
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .italic()
+
+                        Spacer()
+                            .frame(height: 16)
+
+                        Text("Donald J. Trump")
+                            .font(.footnote)
+                            .fontWeight(.medium)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .italic()
+                            .padding()
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    .background(Color.black.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .padding(.vertical)
+                    .padding(.horizontal)
                 }
+                .frame(maxHeight: .infinity, alignment: .top)
                 .navigationTitle("Trump Quotes")
                 .navigationBarTitleDisplayMode(.automatic)
                 .toolbar {
                     if isLoading {
-                        ToolbarItem(placement: .navigationBarTrailing) {
+                        ToolbarItem(placement: .topBarLeading) {
                             Button(action: {
                                 print("Loading button tapped!")
                             }) {
@@ -57,7 +64,7 @@ struct ContentView: View {
                             }
                         }
                     } else {
-                        ToolbarItem(placement: .navigationBarTrailing) {
+                        ToolbarItem(placement: .topBarLeading) {
                             Button(action: {
                                 Task {
                                     isLoading = true
@@ -69,31 +76,29 @@ struct ContentView: View {
                             }
                         }
                     }
+
+                    ToolbarItem(placement: .topBarTrailing) {
+                        let link = URL(string: "https://google.com")!
+                        ShareLink(item: link, message: Text(todaysQuote))
+                        Image(systemName: "link.circle")
+                            .padding()
+                        Text("Share this website")
+                    }
                 }
             }
-
-            .searchable(text: $searchText, prompt: "Search quote")
             .onAppear {
                 isLoading = true
-                Task {
-                    await service.fetchQuotes()
-                    isLoading = false
-                }
-            }
-            .onChange(of: searchText) { _, _ in
-                withAnimation {
-                    _ = quoteResults
-                }
+                loadTodaysQuote()
             }
         } else {}
     }
 
-    var quoteResults: [Quote] {
-        if searchText.isEmpty {
-            return quotes
-        } else {
-            return quotes.filter { $0.quote.localizedStandardContains(searchText) }
-        }
+    private func loadTodaysQuote() {
+        todaysQuote = quoteManager.getTodaysQuote()
+    }
+
+    private func refreshQuote() {
+        todaysQuote = quoteManager.getTodaysQuote()
     }
 }
 
