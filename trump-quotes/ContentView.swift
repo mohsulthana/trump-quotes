@@ -7,12 +7,42 @@
 
 import SwiftUI
 
+struct ImageOverlay: View {
+    var quote: String
+
+    var body: some View {
+        VStack {
+            Text(quote)
+                .font(.title)
+                .padding(6)
+                .foregroundStyle(.white)
+
+            Spacer()
+                .frame(height: 16)
+
+            Text("Donald J. Trump")
+                .font(.callout)
+                .fontWeight(.medium)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .italic()
+                .padding()
+                .foregroundStyle(.white)
+        }
+        .background(Color.black)
+        .opacity(0.8)
+        .cornerRadius(4)
+        .padding(8)
+    }
+}
+
 struct ContentView: View {
-    @State private var isLoading = false
+    @State private var isLoading: Bool = false
     @State private var searchText = ""
     @StateObject private var service = SpreadsheetService()
     @State private var todaysQuote: String = ""
     private let quoteManager = QuoteManager()
+
+    @State private var showingSheet = false
 
     var body: some View {
         if #available(iOS 17.0, *) {
@@ -20,7 +50,8 @@ struct ContentView: View {
                 VStack {
                     Image(uiImage: UIImage(named: "trump-shot")!)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .padding()
 
@@ -29,7 +60,7 @@ struct ContentView: View {
 
                     VStack {
                         Text(todaysQuote)
-                            .font(.custom("Noteworthy-Light", size: 28))
+                            .font(.largeTitle)
                             .multilineTextAlignment(.center)
                             .padding()
                             .italic()
@@ -44,7 +75,6 @@ struct ContentView: View {
                             .italic()
                             .padding()
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     .background(Color.black.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .padding(.vertical)
@@ -66,11 +96,11 @@ struct ContentView: View {
                     } else {
                         ToolbarItem(placement: .topBarLeading) {
                             Button(action: {
+                                isLoading = true
                                 Task {
-                                    isLoading = true
                                     await service.fetchQuotes()
-                                    isLoading = false
                                 }
+                                isLoading = false
                             }) {
                                 Image(systemName: "arrow.triangle.2.circlepath")
                             }
@@ -78,19 +108,43 @@ struct ContentView: View {
                     }
 
                     ToolbarItem(placement: .topBarTrailing) {
-                        let link = URL(string: "https://google.com")!
-                        ShareLink(item: link, message: Text(todaysQuote))
-                        Image(systemName: "link.circle")
-                            .padding()
-                        Text("Share this website")
+                        ShareLink(
+                            item: renderQuotedImage(),
+                            preview: SharePreview("Donald J. Trump", image: renderQuotedImage()) // Optional preview
+                        ) {
+                            Label("Share Content", systemImage: "square.and.arrow.up")
+                                .font(.headline)
+                                .padding()
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                        }
                     }
                 }
             }
             .onAppear {
-                isLoading = true
                 loadTodaysQuote()
             }
         } else {}
+    }
+
+    private func renderQuotedImage() -> Image {
+        let renderer = ImageRenderer(content: ZStack {
+            Image("trump-shot")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            Color.black.opacity(0.7)
+
+            Spacer()
+        }
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        .cornerRadius(6)
+        .overlay(ImageOverlay(quote: todaysQuote), alignment: .center)
+        )
+
+        return Image(uiImage: renderer.uiImage!)
     }
 
     private func loadTodaysQuote() {
