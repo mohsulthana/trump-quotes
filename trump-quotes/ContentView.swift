@@ -14,11 +14,11 @@ struct ImageOverlay: View {
         VStack {
             Text(quote)
                 .font(.title)
-                .padding(6)
+                .padding(.horizontal, 5)
                 .foregroundStyle(.white)
 
             Spacer()
-                .frame(height: 16)
+                .frame(height: 4)
 
             Text("Donald J. Trump")
                 .font(.callout)
@@ -28,9 +28,9 @@ struct ImageOverlay: View {
                 .padding()
                 .foregroundStyle(.white)
         }
-        .background(Color.black)
+        .background(Color.accentColor)
         .opacity(0.8)
-        .cornerRadius(4)
+        .cornerRadius(8)
         .padding(8)
     }
 }
@@ -38,7 +38,7 @@ struct ImageOverlay: View {
 struct ContentView: View {
     @State private var isLoading: Bool = false
     @StateObject private var service = SpreadsheetService()
-    
+
     @State private var todaysQuote: String = ""
     private let quoteManager = QuoteManager()
 
@@ -52,7 +52,7 @@ struct ContentView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
                         .padding()
 
                     Spacer()
@@ -64,6 +64,7 @@ struct ContentView: View {
                             .multilineTextAlignment(.center)
                             .padding()
                             .italic()
+                            .foregroundStyle(Color.white)
 
                         Spacer()
                             .frame(height: 16)
@@ -74,9 +75,10 @@ struct ContentView: View {
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .italic()
                             .padding()
+                            .foregroundStyle(Color.white)
                     }
-                    .background(Color.black.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .background(Color.accentColor)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
                     .padding(.vertical)
                     .padding(.horizontal)
                 }
@@ -135,13 +137,20 @@ struct ContentView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            Color.black.opacity(0.7)
+            Color.black.opacity(0.2)
 
             Spacer()
         }
         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         .cornerRadius(6)
-        .overlay(ImageOverlay(quote: todaysQuote), alignment: .center)
+        .overlay(
+            VStack {
+                Spacer()
+                ImageOverlay(quote: todaysQuote)
+                    .padding(.bottom, 24)
+                    .cornerRadius(16)
+            }
+        )
         )
 
         return Image(uiImage: renderer.uiImage!)
