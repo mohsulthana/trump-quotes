@@ -37,8 +37,8 @@ struct ImageOverlay: View {
 
 struct ContentView: View {
     @State private var isLoading: Bool = false
-    @State private var searchText = ""
     @StateObject private var service = SpreadsheetService()
+    
     @State private var todaysQuote: String = ""
     private let quoteManager = QuoteManager()
 
@@ -81,31 +81,31 @@ struct ContentView: View {
                     .padding(.horizontal)
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
-                .navigationTitle("Trump Quotes")
+                .navigationTitle("Today Quote")
                 .navigationBarTitleDisplayMode(.automatic)
                 .toolbar {
-                    if isLoading {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button(action: {
-                                print("Loading button tapped!")
-                            }) {
-                                Image(systemName: "circle.fill")
-                                    .foregroundStyle(.green)
-                            }
-                        }
-                    } else {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button(action: {
-                                isLoading = true
-                                Task {
-                                    await service.fetchQuotes()
-                                }
-                                isLoading = false
-                            }) {
-                                Image(systemName: "arrow.triangle.2.circlepath")
-                            }
-                        }
-                    }
+//                    if isLoading {
+//                        ToolbarItem(placement: .topBarLeading) {
+//                            Button(action: {
+//                                print("Loading button tapped!")
+//                            }) {
+//                                Image(systemName: "circle.fill")
+//                                    .foregroundStyle(.green)
+//                            }
+//                        }
+//                    } else {
+//                        ToolbarItem(placement: .topBarLeading) {
+//                            Button(action: {
+//                                isLoading = true
+//                                Task {
+//                                    await service.fetchQuotes()
+//                                }
+//                                isLoading = false
+//                            }) {
+//                                Image(systemName: "arrow.triangle.2.circlepath")
+//                            }
+//                        }
+//                    }
 
                     ToolbarItem(placement: .topBarTrailing) {
                         ShareLink(
