@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "Trump Logo White (1).png",
+      "filename" : "New Logo Trump.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Trump Logo White (1) 1.png",
+      "filename" : "New Logo Trump 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "Trump Logo White (1) 2.png",
+      "filename" : "New Logo Trump 2.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
