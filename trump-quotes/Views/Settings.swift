@@ -11,9 +11,13 @@ import UserNotifications
 
 class NotificationManager {
     static let instance = NotificationManager() // Singleton
+    @Published var message: String = ""
+    
+    @State private var todaysQuote: String = ""
+    private let quoteManager = QuoteManager()
     
     func requestAuthorization() {
-        let options: UNAuthorizationOptions = [.alert]
+        let options: UNAuthorizationOptions = [.alert, .sound]
         UNUserNotificationCenter.current().requestAuthorization(options: options) { _, error in
             if let error = error {
                 print("ERROR: \(error)")
@@ -26,7 +30,7 @@ class NotificationManager {
     func scheduleDailyNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Donald J Trump:"
-        content.subtitle = "MAKE AMERICA GREAT AGAIN!"
+        content.subtitle = quoteManager.getTodaysQuote()
         content.sound = .default
         
         var dateComponents = DateComponents()
